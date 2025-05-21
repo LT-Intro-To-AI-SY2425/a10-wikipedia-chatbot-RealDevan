@@ -111,6 +111,97 @@ def get_birth_date(name: str) -> str:
 
     return match.group("birth")
 
+def get_country_capital(country_name: str) -> str:
+    """Gets the capital city of the given country
+
+    Args:
+        country_name - name of the country to get the capital of
+
+    Returns:
+        capital city of the given country
+    """
+    infobox_text = clean_text(get_first_infobox_text(get_page_html(country_name)))
+    pattern = r"(?:Capital.*?)(?: ?[\w\s]+ )?(?P<capital>[\w\s]+)(?:.*?)\n"
+    error_text = "Page infobox has no capital city information"
+    match = get_match(infobox_text, pattern, error_text)
+
+    return match.group("capital")
+
+def get_country_population(country_name: str) -> str:
+    """Gets the population of the given country
+
+    Args:
+        country_name - name of the country to get the population of
+
+    Returns:
+        population of the given country
+    """
+    infobox_text = clean_text(get_first_infobox_text(get_page_html(country_name)))
+    pattern = r"(?:Population.*?)(?: ?[\d]+ )?(?P<population>[\d,.]+)(?:.*?)\n"
+    error_text = "Page infobox has no population information"
+    match = get_match(infobox_text, pattern, error_text)
+
+    return match.group("population")
+
+def get_largest_city(country_name: str) -> str:
+    """Gets the largest city of the given country
+
+    Args:
+        country_name - name of the country to get the largest city of
+
+    Returns:
+        largest city of the given country
+    """
+    infobox_text = clean_text(get_first_infobox_text(get_page_html(country_name)))
+    pattern = r"(?:Largest\s?city.*?)(?: ?[\w\s]+ )?(?P<city>[\w\s]+)(?:.*?)\n"
+    error_text = "Page infobox has no largest city information"
+    match = get_match(infobox_text, pattern, error_text)
+
+    return match.group("city")
+
+
+
+def country_capital(matches: List[str]) -> List[str]:
+    """Returns capital city of named country in matches
+
+    Args:
+        matches - match from pattern of country's name to find capital city of
+
+    Returns:
+        capital city of named country
+    """
+    return [get_country_capital(" ".join(matches))]
+
+
+
+def largest_city(matches: List[str]) -> List[str]:
+    """Returns largest city of named country in matches
+
+    Args:
+        matches - match from pattern of country's name to find largest city of
+
+    Returns:
+        largest city of the named country
+    """
+    return [get_largest_city(“ “.join(matches))]
+
+
+from typing import List
+
+def country_population(matches: List[str]) -> List[str]:
+    """Returns population of named country in matches
+
+    Args:
+        matches - match from pattern of country's name to find population of
+
+    Returns:
+        population of the named country
+    """
+    return [get_country_population(matches[0])]
+
+
+
+
 
 # below are a set of actions. Each takes a list argument and returns a list of answers
 # according to the action and the argument. It is important that each function returns a
@@ -139,6 +230,10 @@ def polar_radius(matches: List[str]) -> List[str]:
         polar radius of planet
     """
     return [get_polar_radius(matches[0])]
+
+from typing import List
+
+
 
 
 # dummy argument is ignored and doesn't matter
